@@ -1,0 +1,20 @@
+{
+  "name": "jsnd3_mars_dashboard",
+  "version": "1.0.0",
+  "description": "Mars Rover Dashboard - Udacity Functional Programming with JavaScript project",
+  "main": "index.js",
+  "scripts": {
+    "start": "node src/server/index.js",
+    "test": "node --test test/server.test.js",
+    "preview:mock": "node test/mock-server.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "body-parser": "^1.19.0",
+    "dotenv": "^8.2.0",
+    "express": "^4.17.1",
+    "immutable": "^4.0.0-rc.12",
+    "node-fetch": "^2.6.0"
+  }
+}

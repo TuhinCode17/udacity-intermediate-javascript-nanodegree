@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <meta name="description" content="Dashboard of the latest photos and mission facts from NASA's Mars rovers.">
+    <title>Mars Rover Dashboard</title>
+    <link rel="stylesheet" href="/assets/stylesheets/resets.css">
+    <link rel="stylesheet" href="/assets/stylesheets/index.css">
+</head>
+
+<body>
+    <div id="root">
+        <p class="boot-message">Loading Mars Dashboard...</p>
+    </div>
+
+    <!-- ImmutableJS (CDN) -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/immutable/4.3.7/immutable.min.js"></script>
+    <!-- Fallback: local copy served from node_modules if the CDN is blocked -->
+    <script>window.Immutable || document.write('<script src="/vendor/immutable.min.js"><\/script>')</script>
+    <script src="/client.js"></script>
+</body>
+
+</html>

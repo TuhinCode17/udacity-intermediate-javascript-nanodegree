@@ -1,0 +1,563 @@
+/* =====================================================================
+   MARS ROVER DASHBOARD - mobile-first stylesheet
+   Base rules = phones (up to 767px). Larger screens are layered on below.
+   ===================================================================== */
+
+:root {
+  --space: #07080f;
+  --space-2: #10121d;
+  --panel: rgba(16, 18, 29, 0.82);
+  --line: rgba(242, 196, 155, 0.16);
+  --text: #ece6df;
+  --muted: #a39a90;
+  --mars: #e4572e;
+  --mars-soft: #f08a5d;
+  --sand: #f2c49b;
+  --active: #5fd38d;
+  --radius: 14px;
+  --font: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+}
+
+/* -------------------  MOBILE  --------------------- */
+
+body {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  font-family: var(--font);
+  line-height: 1.5;
+  color: var(--text);
+  background: var(--space);
+}
+
+#root {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.boot-message {
+  padding: 40px 20px;
+  color: var(--muted);
+}
+
+a {
+  color: var(--sand);
+}
+
+b,
+strong,
+h1,
+h2,
+h3 {
+  font-weight: 700;
+}
+
+/* ---------- app shell + APOD background */
+
+.app {
+  position: relative;
+  isolation: isolate;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+/* APOD image (set as --apod-bg by the client) sits behind a dark gradient */
+.app::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -2;
+  background:
+    linear-gradient(180deg, rgba(7, 8, 15, 0.55) 0%, rgba(7, 8, 15, 0.92) 45%, var(--space) 100%),
+    var(--apod-bg, radial-gradient(ellipse at 70% -10%, #3a1a12 0%, var(--space) 60%));
+  background-size: cover;
+  background-position: center;
+}
+
+/* Twinkling star field */
+.stars {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background-image:
+    radial-gradient(1px 1px at 20px 30px, #fff, transparent),
+    radial-gradient(1px 1px at 120px 80px, rgba(255, 255, 255, 0.8), transparent),
+    radial-gradient(1.5px 1.5px at 200px 160px, #fff, transparent),
+    radial-gradient(1px 1px at 60px 200px, rgba(255, 255, 255, 0.7), transparent),
+    radial-gradient(1px 1px at 260px 40px, rgba(255, 255, 255, 0.6), transparent);
+  background-size: 300px 240px;
+  opacity: 0.5;
+  animation: twinkle 6s ease-in-out infinite alternate;
+}
+
+/* A single slow asteroid streak */
+.stars::after {
+  content: "";
+  position: absolute;
+  top: 10%;
+  left: -10%;
+  width: 120px;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, var(--sand));
+  border-radius: 2px;
+  transform: rotate(18deg);
+  animation: asteroid 14s linear infinite;
+  animation-delay: 3s;
+  opacity: 0;
+}
+
+@keyframes twinkle {
+  from { opacity: 0.35; }
+  to { opacity: 0.65; }
+}
+
+@keyframes asteroid {
+  0% { transform: translate(0, 0) rotate(18deg); opacity: 0; }
+  3% { opacity: 1; }
+  12% { transform: translate(120vw, 40vh) rotate(18deg); opacity: 0; }
+  100% { transform: translate(120vw, 40vh) rotate(18deg); opacity: 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .stars,
+  .stars::after,
+  .loading__planet {
+    animation: none;
+  }
+}
+
+/* ---------- header */
+
+.site-header {
+  padding: 32px 20px 8px;
+}
+
+.site-header__eyebrow {
+  font-size: 0.8rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--sand);
+}
+
+.site-header__title {
+  margin-top: 6px;
+  font-size: 2rem;
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+}
+
+.site-header__title span {
+  color: var(--mars);
+}
+
+.site-header__lead {
+  margin-top: 10px;
+  max-width: 56ch;
+  color: var(--muted);
+}
+
+/* ---------- layout */
+
+main,
+.layout {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 20px;
+}
+
+.rover {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+/* ---------- tabs (rover selection bar) */
+
+.tabs {
+  position: sticky;
+  top: 0;
+  z-index: 5;
+  display: flex;
+  gap: 8px;
+  margin: 0 -20px;
+  padding: 10px 20px;
+  overflow-x: auto;
+  background: rgba(7, 8, 15, 0.85);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  scrollbar-width: none;
+}
+
+.tab {
+  flex: 1 0 auto;
+  min-height: 44px;
+  padding: 10px 18px;
+  font: inherit;
+  font-weight: 600;
+  color: var(--text);
+  background: var(--space-2);
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  cursor: pointer;
+  transition: background 0.2s, border-color 0.2s, color 0.2s;
+}
+
+.tab:hover {
+  border-color: var(--mars-soft);
+}
+
+.tab:focus-visible {
+  outline: 2px solid var(--sand);
+  outline-offset: 2px;
+}
+
+.tab--active {
+  color: #fff;
+  background: var(--mars);
+  border-color: var(--mars);
+}
+
+/* ---------- panels */
+
+.panel {
+  padding: 18px;
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+}
+
+.panel__title {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 12px;
+  margin-bottom: 14px;
+  font-size: 1.1rem;
+}
+
+.panel__title small {
+  font-size: 0.8rem;
+  font-weight: 400;
+  color: var(--muted);
+}
+
+.panel--hero .panel__title {
+  font-size: 1.8rem;
+  letter-spacing: -0.01em;
+}
+
+.muted {
+  color: var(--muted);
+}
+
+/* ---------- status badge (dynamic) */
+
+.badge {
+  padding: 3px 10px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  border-radius: 999px;
+  border: 1px solid currentColor;
+}
+
+.badge--active {
+  color: var(--active);
+}
+
+.badge--complete {
+  color: var(--sand);
+}
+
+.badge--unknown {
+  color: var(--muted);
+}
+
+/* ---------- facts list */
+
+.facts {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  column-gap: 16px;
+}
+
+.facts li {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 12px 0;
+  border-top: 1px solid var(--line);
+}
+
+.facts__label {
+  font-size: 0.72rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.facts__value {
+  font-weight: 600;
+}
+
+/* ---------- camera chips */
+
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 12px;
+  font-size: 0.85rem;
+  background: var(--space-2);
+  border: 1px solid var(--line);
+  border-radius: 999px;
+}
+
+.chip b {
+  color: var(--mars-soft);
+}
+
+/* ---------- gallery */
+
+.gallery {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+}
+
+.photo {
+  margin: 0;
+  overflow: hidden;
+  background: var(--space-2);
+  border: 1px solid var(--line);
+  border-radius: 10px;
+}
+
+.photo__link {
+  display: block;
+  aspect-ratio: 1 / 1;
+  overflow: hidden;
+  background: #000;
+}
+
+.photo img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.4s ease;
+}
+
+.photo__link:hover img,
+.photo__link:focus-visible img {
+  transform: scale(1.06);
+}
+
+.photo__caption {
+  display: flex;
+  flex-direction: column;
+  padding: 8px 10px;
+  font-size: 0.75rem;
+  color: var(--muted);
+}
+
+.photo__caption span:first-child {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  color: var(--text);
+  font-weight: 600;
+}
+
+.source-note {
+  font-size: 0.8rem;
+  color: var(--muted);
+}
+
+/* ---------- APOD panel */
+
+.apod {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.apod__image {
+  width: 100%;
+  max-height: 360px;
+  object-fit: cover;
+  border-radius: 10px;
+}
+
+.apod__text {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.apod__text h3 {
+  font-size: 1.1rem;
+}
+
+/* ---------- loading + error */
+
+.loading,
+.error {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+  padding: 48px 20px;
+  text-align: center;
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+}
+
+.loading__planet {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 30% 30%, var(--mars-soft), var(--mars) 55%, #6e2412);
+  box-shadow: 0 0 24px rgba(228, 87, 46, 0.5);
+  animation: pulse 1.4s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { transform: scale(0.9); opacity: 0.7; }
+  50% { transform: scale(1); opacity: 1; }
+}
+
+.error .tab {
+  flex: 0 0 auto;
+}
+
+/* ---------- footer */
+
+.site-footer {
+  padding: 24px 20px 32px;
+  font-size: 0.8rem;
+  color: var(--muted);
+}
+
+/* -------------------  TABLET  --------------------- */
+
+@media (min-width: 768px) {
+  .site-header {
+    padding: 48px 32px 8px;
+  }
+
+  .site-header__title {
+    font-size: 2.6rem;
+  }
+
+  .layout {
+    padding: 24px 32px;
+  }
+
+  .tabs {
+    margin: 0 -32px;
+    padding: 12px 32px;
+  }
+
+  .tab {
+    flex: 0 0 auto;
+  }
+
+  .facts {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  .gallery {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  .site-footer {
+    padding: 24px 32px 40px;
+  }
+}
+
+/* -------------------  DESKTOP  -------------------- */
+
+@media (min-width: 991px) {
+  .site-header,
+  .layout,
+  .site-footer {
+    width: 100%;
+    max-width: 1280px;
+    margin: 0 auto;
+  }
+
+  .site-header__title {
+    font-size: 3.2rem;
+  }
+
+  .tabs {
+    position: static;
+    margin: 0;
+    padding: 0;
+    background: none;
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+  }
+
+  /* Facts and cameras side by side, gallery full width below */
+  .rover {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    align-items: start;
+  }
+
+  .rover > .panel:nth-child(3),
+  .rover > .source-note {
+    grid-column: 1 / -1;
+  }
+
+  .gallery {
+    grid-template-columns: repeat(4, 1fr);
+    gap: 14px;
+  }
+
+  .apod {
+    flex-direction: row;
+    align-items: flex-start;
+  }
+
+  .apod__image,
+  .apod > p {
+    flex: 0 0 45%;
+    max-height: 420px;
+  }
+}
+
+/* -------------------  LARGE SCREENS  -------------- */
+
+@media (min-width: 1824px) {
+  html {
+    font-size: 18px;
+  }
+
+  .site-header,
+  .layout,
+  .site-footer {
+    max-width: 1600px;
+  }
+
+  .gallery {
+    grid-template-columns: repeat(6, 1fr);
+  }
+}
